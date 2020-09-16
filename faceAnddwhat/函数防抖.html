@@ -1,0 +1,27 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <div>
+            <button id="btn">按钮</button>
+        </div>
+    </body>
+    <script type="text/javascript">
+        function debounce(fn, delay) {
+            // 记录上一次的延时器
+           var timer = null;
+            return function() {
+            // 清除上一次延时器
+            clearTimeout(timer)
+            timer = setTimeout(function() {
+                    fn.apply(this)
+                }, delay)
+                
+            }
+        }
+        document.getElementById('btn').onclick = debounce(function() {
+            console.log('点击事件被触发' + Date.now())
+        }, 1000)
+    </script>
+</html>
