@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input id="input" />
+    <p id="error" style="color: red;display: none;">字数不能超过8个字</p>
+    <button id="clearError">X</button>
+
+    <script>
+        var input = document.getElementById('input')
+        var errorMsg = document.getElementById('error')
+        var clearError = document.getElementById('clearError')
+
+        clearError.addEventListener('click', function() {
+            setState({
+                error : false
+            })
+        })
+
+        // 设置state
+        var state = {
+            value : "",
+            error : false
+        }
+
+        // setState
+        var setState = function (newState) {
+            state = {
+                ...state,
+                ...newState
+            }
+            render()
+        }
+
+        // 渲染
+        var render = function () {
+            input.value = state.value;
+            if (state.error) {
+                errorMsg.style.display = 'block'
+            } else {
+                errorMsg.style.display = 'none'
+            }
+        }
+
+        var handleValue = function (value) {
+            console.log("value: ", value);
+            if (value.length < 10) {
+                setState({
+                    value : value,
+                    //error : false
+                })
+            } else {
+                setState({
+                    error : true
+                })
+            }
+        }
+
+        input.addEventListener('input', function () {
+            handleValue(this.value);
+        })
+    </script>
+</body>
+</html>

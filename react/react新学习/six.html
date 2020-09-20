@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root">
+
+    </div>
+    <script>
+        var root = document.getElementById('root');
+
+        class component {
+            setState (newState) {
+                this.state = {
+                    ...this.state,
+                    ...newState
+                }
+            }
+        }
+
+        class Button extends component{
+            constructor() {
+                super()
+                this.state = {
+                    like : true
+                }
+                this.render()
+            }
+            setState(newState) {
+                this.state = {
+                    ...this.state,
+                    ...newState
+                }
+                this.render()
+            }
+
+            render() {
+                return `
+                <button style="color : ${this.state.like ? 'red' : 'black'};">${this.state.like ? '已阅' : '喜欢'}</button>
+                `
+            }
+
+        }
+
+        class Title  extends component{
+            constructor() {
+                super()
+                this.state = {
+                    title: '这是一个变态'
+                }
+                this.render()
+            }
+            render() {
+                    return `
+                    <p> ${this.state.title}</p>
+                    `
+                }
+        }
+
+        class Wrap {
+            constructor() {
+
+            }
+            render() {
+                return `
+                    wrap
+                    ${new Title().render()}
+                    ${new Title().render()}
+                    ${new Button().render()}
+                    `
+            }
+        }
+        root.innerHTML = new Wrap().render()
+    </script>
+</body>
+</html>

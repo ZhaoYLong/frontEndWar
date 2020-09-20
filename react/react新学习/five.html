@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root">
+
+    </div>
+    <script>
+        root = document.getElementById('root');
+
+        // state
+        var state = {
+            like : false
+        }
+
+        // setState
+        var setState = function (newState) {
+            state = {
+                ...state,
+                ...newState
+            }
+            render()
+        }
+
+        //handleClick
+        var handleClick = function () {
+            setState(
+                {
+                    like : !state.like
+                }
+            )
+        }
+
+        // render
+        var render = function () {
+            root.innerHTML = 
+            `
+                <button type="button" style="color : ${state.like ? "red" : "black"};" onclick="handleClick()">
+                    ${state.like ? "已赞" : "喜欢"}
+                </button>
+            `
+        }
+        render()
+    </script>
+</body>
+</html>
