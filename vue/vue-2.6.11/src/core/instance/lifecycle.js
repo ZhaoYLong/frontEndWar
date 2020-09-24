@@ -93,6 +93,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // updated in a parent's updated hook.
   }
 
+  // 强更新
   Vue.prototype.$forceUpdate = function () {
     const vm: Component = this
     if (vm._watcher) {
@@ -100,28 +101,34 @@ export function lifecycleMixin (Vue: Class<Component>) {
     }
   }
 
+  // 销毁阶段
   Vue.prototype.$destroy = function () {
     const vm: Component = this
-    if (vm._isBeingDestroyed) {
+    if (vm._isBeingDestroyed) { // 首先判断当前实例的_isBeingDestroyed属性是否为true，因为该属性标志着当前实例是否处于正在被销毁的状态，如果它为true，则直接return退出函数，防止反复执行销毁逻辑
       return
     }
-    callHook(vm, 'beforeDestroy')
-    vm._isBeingDestroyed = true
+    callHook(vm, 'beforeDestroy')  // 调用钩子函数beforeDestroy
+    vm._isBeingDestroyed = true  // 将正在销毁的状态设置为true
     // remove self from parent
     const parent = vm.$parent
     if (parent && !parent._isBeingDestroyed && !vm.$options.abstract) {
-      remove(parent.$children, vm)
+      remove(parent.$children, vm)  // 移除该实例所在的父级的$children
+      // 如果当前实例有父级实例，同时该父级实例没有被销毁并且不是抽象组件，那么就将当前实例从其父级实例的$children属性中删除，即将自己从父级实例的子实例列表中删除
     }
     // teardown watchers
+    // 将自己身上的依赖追踪和事件监听移除
+
     if (vm._watcher) {
-      vm._watcher.teardown()
+      vm._watcher.teardown()  // 将实例自身从其他依赖列表中删除,teardown方法的作用从所有依赖向的Dep列表中将自己删除
     }
     let i = vm._watchers.length
     while (i--) {
-      vm._watchers[i].teardown()
+      vm._watchers[i].teardown() // 
     }
     // remove reference from data ob
     // frozen object may not have observer.
+
+    // 移除实例内响应式数据的引用、给当前实例上添加_isDestroyed属性来表示当前实例已经被销毁，同时将实例的VNode树设置为null
     if (vm._data.__ob__) {
       vm._data.__ob__.vmCount--
     }
@@ -130,9 +137,9 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // invoke destroy hooks on current rendered tree
     vm.__patch__(vm._vnode, null)
     // fire destroyed hook
-    callHook(vm, 'destroyed')
+    callHook(vm, 'destroyed')  // 触发钩子函数destroyed,
     // turn off all instance listeners.
-    vm.$off()
+    vm.$off()  // 最后移除实例上的所有事件监听器
     // remove __vue__ reference
     if (vm.$el) {
       vm.$el.__vue__ = null
@@ -149,9 +156,11 @@ export function mountComponent (
   el: ?Element,
   hydrating?: boolean
 ): Component {
-  vm.$el = el
+  vm.$el = el  // 将el对应的DOM赋值给vm实例的$el
+
+  // 若实例上没有render函数
   if (!vm.$options.render) {
-    vm.$options.render = createEmptyVNode
+    vm.$options.render = createEmptyVNode  // 设立一个渲染函数createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
       /* istanbul ignore if */
       if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') ||
@@ -170,11 +179,13 @@ export function mountComponent (
       }
     }
   }
-  callHook(vm, 'beforeMount')
+  callHook(vm, 'beforeMount')  //挂载前先调钩子函数beforeMount, 标志正式执行挂载操作
 
-  let updateComponent
+  let updateComponent  // 然后执行updateComponent函数
   /* istanbul ignore if */
   if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
+
+    // 在updateComponent里面
     updateComponent = () => {
       const name = vm._name
       const id = vm._uid
@@ -182,12 +193,12 @@ export function mountComponent (
       const endTag = `vue-perf-end:${id}`
 
       mark(startTag)
-      const vnode = vm._render()
+      const vnode = vm._render()  // 1.先执行渲染函数vm._render()
       mark(endTag)
       measure(`vue ${name} render`, startTag, endTag)
 
       mark(startTag)
-      vm._update(vnode, hydrating)
+      vm._update(vnode, hydrating)    // 2.再执行vm._update()
       mark(endTag)
       measure(`vue ${name} patch`, startTag, endTag)
     }
@@ -200,10 +211,12 @@ export function mountComponent (
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
+
+  // 接下来创建了一个Watcher实例，并将定义好的updateComponent函数传入
   new Watcher(vm, updateComponent, noop, {
     before () {
       if (vm._isMounted && !vm._isDestroyed) {
-        callHook(vm, 'beforeUpdate')
+        callHook(vm, 'beforeUpdate')  // 调用钩子函数beforeUpdate
       }
     }
   }, true /* isRenderWatcher */)
@@ -213,7 +226,7 @@ export function mountComponent (
   // mounted is called for render-created child components in its inserted hook
   if (vm.$vnode == null) {
     vm._isMounted = true
-    callHook(vm, 'mounted')
+    callHook(vm, 'mounted')  // 调用钩子函数mounted表示挂载完成
   }
   return vm
 }
