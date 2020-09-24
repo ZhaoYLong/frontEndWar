@@ -40,18 +40,30 @@ export type CodegenResult = {
   staticRenderFns: Array<string>
 };
 
+// 将ast转换成函数字符串的函数
 export function generate (
   ast: ASTElement | void,
   options: CompilerOptions
 ): CodegenResult {
   const state = new CodegenState(options)
-  const code = ast ? genElement(ast, state) : '_c("div")'
+  const code = ast ? genElement(ast, state) : '_c("div")'   // 判空
   return {
     render: `with(this){return ${code}}`,
     staticRenderFns: state.staticRenderFns
   }
 }
 
+/**
+ * 
+ * @param {*} el 
+ * @param {*} state 
+ * 就是根据当前 AST 元素节点属性的不同从而执行不同的代码生成函数。
+ * 虽然元素节点属性的情况有很多种，
+ * 但是最后真正创建出来的VNode无非就三种，分别是元素节点，文本节点，注释节点
+ */
+// 关键步骤
+
+// 元素节点
 export function genElement (el: ASTElement, state: CodegenState): string {
   if (el.parent) {
     el.pre = el.pre || el.parent.pre
@@ -77,15 +89,19 @@ export function genElement (el: ASTElement, state: CodegenState): string {
     } else {
       let data
       if (!el.plain || (el.pre && state.maybeComponent(el))) {
-        data = genData(el, state)
+        data = genData(el, state) // 调用genData()获取节点属性data数据
       }
 
-      const children = el.inlineTemplate ? null : genChildren(el, state, true)
+      const children = el.inlineTemplate ? null : genChildren(el, state, true) // 调用genChildren()得到节点的children属性
       code = `_c('${el.tag}'${
         data ? `,${data}` : '' // data
       }${
         children ? `,${children}` : '' // children
       })`
+      /**
+       * 生成元素节点的render函数就是生成一个_c()函数调用的字符串，
+       * 上文提到了_c()函数接收三个参数，分别是节点的标签名tagName，节点属性data，节点的子节点列表children
+       */
     }
     // module transforms
     for (let i = 0; i < state.transforms.length; i++) {
@@ -532,6 +548,7 @@ function genNode (node: ASTNode, state: CodegenState): string {
   }
 }
 
+// 文本节点
 export function genText (text: ASTText | ASTExpression): string {
   return `_v(${text.type === 2
     ? text.expression // no need for () because already wrapped in _s()
@@ -539,6 +556,7 @@ export function genText (text: ASTText | ASTExpression): string {
   })`
 }
 
+// 注释节点
 export function genComment (comment: ASTText): string {
   return `_e(${JSON.stringify(comment.text)})`
 }
