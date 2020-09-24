@@ -271,11 +271,11 @@ export function genData (el: ASTElement, state: CodegenState): string {
   if (el.props) {
     data += `domProps:${genProps(el.props)},`
   }
-  // event handlers
+  // event handlers ； 自定义事件
   if (el.events) {
     data += `${genHandlers(el.events, false)},`
   }
-  if (el.nativeEvents) {
+  if (el.nativeEvents) { // 浏览器原生事件
     data += `${genHandlers(el.nativeEvents, true)},`
   }
   // slot target

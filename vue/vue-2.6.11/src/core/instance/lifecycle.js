@@ -33,6 +33,12 @@ export function initLifecycle (vm: Component) {
   const options = vm.$options
 
   // locate first non-abstract parent
+  /**
+   * $parent属性的逻辑：当前组件不是抽象组件，且存在父级，就通过while循环来向上循环
+   * 直到找到第一个不是抽象类型的父级时，将之赋值给vm.$parent,同时将实例自身添加到父级的$children属性
+   * 确保在子组件的$parent属性上能访问到父组件实例，在父组件实例上的$children能访问子组件
+   * 
+   */
   let parent = options.parent
   if (parent && !options.abstract) {
     while (parent.$options.abstract && parent.$parent) {
@@ -42,14 +48,14 @@ export function initLifecycle (vm: Component) {
   }
 
   vm.$parent = parent
-  vm.$root = parent ? parent.$root : vm
+  vm.$root = parent ? parent.$root : vm  // 给实例挂上$root属性；当前实例存在父级，当前实例的$root就是parent.$root；不存在父级，$root就是自己
 
   vm.$children = []
   vm.$refs = {}
 
   vm._watcher = null
-  vm._inactive = null
-  vm._directInactive = false
+  vm._inactive = null  // 不活跃
+  vm._directInactive = false  // 直接无效
   vm._isMounted = false
   vm._isDestroyed = false
   vm._isBeingDestroyed = false

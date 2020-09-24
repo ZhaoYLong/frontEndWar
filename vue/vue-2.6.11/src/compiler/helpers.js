@@ -109,21 +109,23 @@ export function addHandler (
   }
 
   // check capture modifier
+  // 判断是否有capture修饰符
   if (modifiers.capture) {
     delete modifiers.capture
-    name = prependModifierMarker('!', name, dynamic)
+    name = prependModifierMarker('!', name, dynamic) // 给事件名前加‘!’用以标记capture修饰符
   }
-  if (modifiers.once) {
+  if (modifiers.once) { // 是否有once修饰符
     delete modifiers.once
-    name = prependModifierMarker('~', name, dynamic)
+    name = prependModifierMarker('~', name, dynamic) // 给事件名前加'~'用以标记once修饰符
   }
   /* istanbul ignore if */
-  if (modifiers.passive) {
+  if (modifiers.passive) {  // 是否有passive修饰符
     delete modifiers.passive
-    name = prependModifierMarker('&', name, dynamic)
+    name = prependModifierMarker('&', name, dynamic)  // 给事件名前加'&'用以标记passive修饰符
   }
 
   let events
+  // 判断事件是否为浏览器原生事件
   if (modifiers.native) {
     delete modifiers.native
     events = el.nativeEvents || (el.nativeEvents = {})

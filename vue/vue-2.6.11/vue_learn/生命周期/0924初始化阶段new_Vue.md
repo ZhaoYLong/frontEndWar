@@ -11,6 +11,6 @@
 
 
 - Vue内置组件：
-  - <keep-alive>
-  - <transition>
-  - <transition-group>
+  - ```<keep-alive>```
+  - ```<transition>```
+  - ```<transition-group>```

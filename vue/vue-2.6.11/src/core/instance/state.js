@@ -46,17 +46,17 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 }
 
 export function initState (vm: Component) {
-  vm._watchers = []
+  vm._watchers = []  // Vue实例上新增一个_watchers属性，用来存储当前实例的所有watcher实例
   const opts = vm.$options
-  if (opts.props) initProps(vm, opts.props)
-  if (opts.methods) initMethods(vm, opts.methods)
-  if (opts.data) {
+  if (opts.props) initProps(vm, opts.props)  // 判断实例中是否有props选项，如果有，就调用props选项初始化函数initProps去初始化props选项；
+  if (opts.methods) initMethods(vm, opts.methods) // 有没有methods
+  if (opts.data) { // 有data,initData; 无data，把data当作空对象并将其转换成响应式
     initData(vm)
   } else {
     observe(vm._data = {}, true /* asRootData */)
   }
-  if (opts.computed) initComputed(vm, opts.computed)
-  if (opts.watch && opts.watch !== nativeWatch) {
+  if (opts.computed) initComputed(vm, opts.computed) // 有无computed
+  if (opts.watch && opts.watch !== nativeWatch) { // 有无watch
     initWatch(vm, opts.watch)
   }
 }

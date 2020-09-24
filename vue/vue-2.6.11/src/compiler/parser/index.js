@@ -21,7 +21,7 @@ import {
   getAndRemoveAttrByRegex
 } from '../helpers'
 
-export const onRE = /^@|^v-on:/
+export const onRE = /^@|^v-on:/  // 事件的修饰符 @和v-on:
 export const dirRE = process.env.VBIND_PROP_SHORTHAND
   ? /^v-|^@|^:|^\.|^#/
   : /^v-|^@|^:|^#/
@@ -781,6 +781,7 @@ function processComponent (el) {
   }
 }
 
+// 解析标签中的属性
 function processAttrs (el) {
   const list = el.attrsList
   let i, l, name, rawName, value, modifiers, syncGen, isDynamic
@@ -791,6 +792,7 @@ function processAttrs (el) {
       // mark element as dynamic
       el.hasBindings = true
       // modifiers
+      // 解析修饰符
       modifiers = parseModifiers(name.replace(dirRE, ''))
       // support .foo shorthand syntax for the .prop modifier
       if (process.env.VBIND_PROP_SHORTHAND && propBindRE.test(name)) {
@@ -867,13 +869,15 @@ function processAttrs (el) {
         } else {
           addAttr(el, name, value, list[i], isDynamic)
         }
-      } else if (onRE.test(name)) { // v-on
+      } 
+      // 解析事件修饰符
+      else if (onRE.test(name)) { // v-on
         name = name.replace(onRE, '')
         isDynamic = dynamicArgRE.test(name)
         if (isDynamic) {
           name = name.slice(1, -1)
         }
-        addHandler(el, name, value, modifiers, false, warn, list[i], isDynamic)
+        addHandler(el, name, value, modifiers, false, warn, list[i], isDynamic) // 是事件的指令，调用这个函数
       } else { // normal directives
         name = name.replace(dirRE, '')
         // parse arg
