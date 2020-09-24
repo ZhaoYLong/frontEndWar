@@ -16,7 +16,8 @@ export const LIFECYCLE_HOOKS = [
   'beforeDestroy',
   'destroyed',
   'activated',
-  'deactivated',
+  'deactivated',   // 停用
   'errorCaptured',
-  'serverPrefetch'
+  'serverPrefetch'  // 服务预处理
+  
 ]

@@ -46,6 +46,7 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   Vue.nextTick = nextTick
 
   // 2.6 explicit observable API
+  // Vue.options就是预先创建的一个空对象，然后遍历ASSET_TYPES
   Vue.observable = <T>(obj: T): T => {
     observe(obj)
     return obj
@@ -60,6 +61,7 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   // components with in Weex's multi-instance scenarios.
   Vue.options._base = Vue
 
+  //最后通过65行这个方法把一些内置组件扩展到Vue.options.components上
   extend(Vue.options.components, builtInComponents)
 
   initUse(Vue)

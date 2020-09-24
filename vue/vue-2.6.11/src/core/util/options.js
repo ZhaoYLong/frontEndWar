@@ -46,6 +46,7 @@ if (process.env.NODE_ENV !== 'production') {
 /**
  * Helper that recursively merges two data objects together.
  */
+// 合并Data
 function mergeData (to: Object, from: ?Object): Object {
   if (!from) return to
   let key, toVal, fromVal
@@ -76,6 +77,7 @@ function mergeData (to: Object, from: ?Object): Object {
 /**
  * Data
  */
+// 合并Data
 export function mergeDataOrFn (
   parentVal: any,
   childVal: any,
@@ -143,6 +145,7 @@ strats.data = function (
 /**
  * Hooks and props are merged as arrays.
  */
+// 合并钩子函数
 function mergeHook (
   parentVal: ?Array<Function>,
   childVal: ?Function | ?Array<Function>
@@ -157,6 +160,23 @@ function mergeHook (
   return res
     ? dedupeHooks(res)
     : res
+}
+
+// 将mergeHook展开
+function mergeHook_Fake(parentVal, childVal) {
+  if (childVal) {
+    if (parentVal) {
+      return parentVal.concat(childVal)
+    } else {
+      if (Array.isArray(childVal)) {
+        return childVal
+      } else {
+        return [childVal]
+      }
+    } else {
+      return parentVal
+    }
+  }
 }
 
 function dedupeHooks (hooks) {
@@ -180,6 +200,7 @@ LIFECYCLE_HOOKS.forEach(hook => {
  * a three-way merge between constructor options, instance
  * options and parent options.
  */
+// 合并资源
 function mergeAssets (
   parentVal: ?Object,
   childVal: ?Object,
@@ -385,6 +406,7 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
  * Merge two option objects into a new one.
  * Core utility used in both instantiation and inheritance.
  */
+// 合并两个options对象，并返回一个新的对象
 export function mergeOptions (
   parent: Object,
   child: Object,

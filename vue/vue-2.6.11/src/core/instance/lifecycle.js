@@ -336,9 +336,10 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
   pushTarget()
-  const handlers = vm.$options[hook]
+  const handlers = vm.$options[hook]  // 从实例的$options中获取到需要触发的钩子名称所对应的钩子函数数组handlers
   const info = `${hook} hook`
   if (handlers) {
+    // 遍历数组，将每一个钩子函数都执行一遍
     for (let i = 0, j = handlers.length; i < j; i++) {
       invokeWithErrorHandling(handlers[i], vm, null, vm, info)
     }
