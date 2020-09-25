@@ -7,13 +7,15 @@ import { isIE, isIOS, isNative } from './env'
 
 export let isUsingMicroTask = false
 
-const callbacks = []
-let pending = false
+const callbacks = []  // 回调队列
+let pending = false  // 异步锁
 
+// 执行队列中的每一个回调
 function flushCallbacks () {
-  pending = false
-  const copies = callbacks.slice(0)
+  pending = false  // 重置异步锁
+  const copies = callbacks.slice(0) // 防止出现nextTick中包含nextTick时出现问题，在执行回调函数队列前，提前复制备份并清空回调函数队列
   callbacks.length = 0
+  // 执行回调函数队列
   for (let i = 0; i < copies.length; i++) {
     copies[i]()
   }
@@ -40,6 +42,7 @@ let timerFunc
 // Promise is available, we will use it:
 /* istanbul ignore next, $flow-disable-line */
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
+  // 是否支持Promise.then
   const p = Promise.resolve()
   timerFunc = () => {
     p.then(flushCallbacks)
@@ -52,6 +55,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   }
   isUsingMicroTask = true
 } else if (!isIE && typeof MutationObserver !== 'undefined' && (
+  // 是否支持MutationObserver
   isNative(MutationObserver) ||
   // PhantomJS and iOS 7.x
   MutationObserver.toString() === '[object MutationObserverConstructor]'
@@ -69,8 +73,10 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
     counter = (counter + 1) % 2
     textNode.data = String(counter)
   }
-  isUsingMicroTask = true
-} else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
+  isUsingMicroTask = true  // 设置使用微任务
+} 
+// 检测是否支持原生的setImmediate(高版本 IE 和 Edge 支持)
+else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   // Fallback to setImmediate.
   // Technically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
@@ -80,12 +86,13 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 } else {
   // Fallback to setTimeout.
   timerFunc = () => {
-    setTimeout(flushCallbacks, 0)
+    setTimeout(flushCallbacks, 0)  // 不支持则使用setTimeout
   }
 }
 
 export function nextTick (cb?: Function, ctx?: Object) {
   let _resolve
+  // 将回调函数推入回调队列
   callbacks.push(() => {
     if (cb) {
       try {
@@ -97,11 +104,14 @@ export function nextTick (cb?: Function, ctx?: Object) {
       _resolve(ctx)
     }
   })
+
+  // 如果异步锁未锁上，锁上异步锁，调用异步函数，准备等同步函数执行完后，就开始执行回调函数队列
   if (!pending) {
     pending = true
     timerFunc()
   }
   // $flow-disable-line
+  // 如果没有提供回调，并且支持Promise，返回一个Promise
   if (!cb && typeof Promise !== 'undefined') {
     return new Promise(resolve => {
       _resolve = resolve

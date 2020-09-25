@@ -21,7 +21,7 @@ initMixin(Vue)
 // initMixin()内部给Vue类的原型上绑定了_init()方法，new Vue就相当于执行_init方法
 stateMixin(Vue)  // 挂载$set, $delete, $watch等方法
 eventsMixin(Vue) // 挂载$on, $emit, $off, $once等与事件相关的方法
-lifecycleMixin(Vue)
-renderMixin(Vue)
+lifecycleMixin(Vue) // 挂载$forceUpdate, $destroy方法
+renderMixin(Vue)  // 挂载$nextTick方法
 
 export default Vue
