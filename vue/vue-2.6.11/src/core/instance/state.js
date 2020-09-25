@@ -300,6 +300,7 @@ function initWatch (vm: Component, watch: Object) {
   }
 }
 
+// 这个函数的作用就是把用户传入的对象中的回调函数cb和参数options剥离，然后再以常规的方式调用$watch方法并将剥离出来的参数穿进去
 function createWatcher (
   vm: Component,
   expOrFn: string | Function,
@@ -339,29 +340,30 @@ export function stateMixin (Vue: Class<Component>) {
   Object.defineProperty(Vue.prototype, '$data', dataDef)
   Object.defineProperty(Vue.prototype, '$props', propsDef)
 
-  Vue.prototype.$set = set
-  Vue.prototype.$delete = del
+  Vue.prototype.$set = set  // 挂载$set
+  Vue.prototype.$delete = del  // 挂载$delete
 
+  // $watch的定义
   Vue.prototype.$watch = function (
     expOrFn: string | Function,
     cb: any,
     options?: Object
   ): Function {
     const vm: Component = this
-    if (isPlainObject(cb)) {
-      return createWatcher(vm, expOrFn, cb, options)
+    if (isPlainObject(cb)) { // 判断传入的是否为一个对象
+      return createWatcher(vm, expOrFn, cb, options)  // 是的话就调用createWatcher()
     }
     options = options || {}
-    options.user = true
-    const watcher = new Watcher(vm, expOrFn, cb, options)
-    if (options.immediate) {
+    options.user = true  // 用来区分用户创建的watcher实例还是Vue内部创建的
+    const watcher = new Watcher(vm, expOrFn, cb, options) // 传入参数，创建一个watcher实例
+    if (options.immediate) {  // options里的immediate：true，立即用被观察数据当前的值触发回调
       try {
         cb.call(vm, watcher.value)
       } catch (error) {
         handleError(error, vm, `callback for immediate watcher "${watcher.expression}"`)
       }
     }
-    return function unwatchFn () {
+    return function unwatchFn () {  // 最后返回一个取消观察函数unwatchFn
       watcher.teardown()
     }
   }
