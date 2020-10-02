@@ -168,12 +168,23 @@
   - React.createContext()
   - 等
 - vue的虚拟dom
+  - [vue虚拟DOM参考博客](https://juejin.im/post/6844903895467032589)
+  - [vue虚拟DOM源码解析](https://vue-js.com/learn-vue/filter/#_1-%E5%89%8D%E8%A8%80)
+  - [本文档的学习](../vue/vue-2.6.11/vue_learn/虚拟DOM/0923虚拟DOM.md)
 - react的虚拟dom
+  - [react虚拟DOM参考博客](https://juejin.im/post/6844903529161850893)
 - vue的diff算法
+  - 见上一条中的diff分析
 - react的diff算法
+  - 见上一条中的diff分析
 - vue的数据流动和页面渲染
-- react的页面流动和页面渲染
+  - 单向流动
+  - 数据驱动页面渲染
+- react的数据流动和页面渲染
+  - 单向流动
+  - 数据发生变化，导致也页面重新渲染
 - vue-router，特性
+  - [见vue-router面试题汇总](1003vue-router面试题.md)
 - react-router，特性
 - vue-router与react-router之间的比较
 - 做过哪些vue的优化
