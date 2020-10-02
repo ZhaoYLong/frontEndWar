@@ -98,7 +98,7 @@
       - getSnapshotbeforeUpdate
 
      
-- 两者的区别（优缺点）
+- 两者的区别（优缺点） [详细对比见](1001Vue和React区别.md)
   - 相同点：
     - 使用Virtual DOM，有自己的diff渲染算法
     - 提供了响应式（Reactive）和组件化（Composable）的视图组件
@@ -138,12 +138,35 @@
 - react，首屏加载的优化
   - ![react](../img/react-knows.png)
 - vuex都有哪些特性
-- redux有哪些特性
+  - [见vuex面试题](1002Vuex面试题.md)
+- redux有哪些特性]
+  - 见redux面试题
 - vuex与redux之间的区别
+  - 同样是状态管理库，Vuex和Redux的理念一摸一样
+  - [区别详见](1002Redux和Vuex的对比.md)
 - vue，在每个生命周期都能做哪些事情
+  - [详见个人文档](vue面试1.md)
+  - [参考博客](https://segmentfault.com/a/1190000011381906)
 - react，在每个生命周期都能在做哪些事情
+  - 看上面的react生命周期
+  - ![react-lifecycle](../img/react-lifecycle.png)
+  - react生命周期主要包括三个阶段：
+    - 初始化阶段、运行中阶段（或更新时阶段）、销毁阶段
 - vue的api
+  - vue常用API
+    - [Vue常用API](https://zhuanlan.zhihu.com/p/42974849)
+    - Vue.extend()
+    - Vue.filter()
+    - Vue.set()
+    - Vue.delete()
+    - Vue.mixin()
+    - Vue.directive()
 - react的api
+  - [一个参考](https://juejin.im/post/6844903938085355527)
+  - React.Children()
+  - React.createRef()
+  - React.createContext()
+  - 等
 - vue的虚拟dom
 - react的虚拟dom
 - vue的diff算法
@@ -163,3 +186,5 @@
 - react的组件传值
 - 知道react hook吗？
 - 高阶组件hoc用过吗？哪些？ 
+- vue懒加载
+- React懒加载
