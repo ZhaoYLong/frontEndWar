@@ -192,6 +192,9 @@
 - 做过哪些vue的优化
   - [vue性能优化](1003vue性能优化.md)
 - 做过哪些react的优化
+  - 单组件：减少render函数渲染次数
+  - 避免重新渲染
+  - 多组件优化：减少子组件render函数的执行次数（减少子组件的重渲）
 - 看过vue的源码吗
   - 看过
 - 看过react的源码吗
@@ -214,4 +217,6 @@
 - 知道react hook吗？
 - 高阶组件hoc用过吗？哪些？ 
 - vue懒加载
+  - [参考博客](https://juejin.im/post/6844904192650428429)
 - React懒加载
+  - [参考博客](https://mp.weixin.qq.com/s/t0mXviE7ceP-dbKzTEOM4g)
