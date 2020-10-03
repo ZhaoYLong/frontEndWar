@@ -186,15 +186,31 @@
 - vue-router，特性
   - [见vue-router面试题汇总](1003vue-router面试题.md)
 - react-router，特性
+  - [见react-router概览](1003react-router面试题.md)
 - vue-router与react-router之间的比较
+  - [vue-router和react-router之间的对照](https://juejin.im/post/6844904164531634190)
 - 做过哪些vue的优化
+  - [vue性能优化](1003vue性能优化.md)
 - 做过哪些react的优化
 - 看过vue的源码吗
+  - 看过
 - 看过react的源码吗
+  - 没有
 - vue异步编程实现
 - react异步编程实现
 - vue的组件传值
+  - 父子，props， $parent, $children, $emit, 
+    - 父传子：props, ref, $children
+    - 子传父：this.$emit(), $parent
+  - 兄弟，事件bus(EventBus)
+  - 爷孙：$attrs, $listeners
+  - provide/inject隔代组件传值（祖先组件传给其任意后代元素）
+  - vuex
 - react的组件传值
+  - 父传子：props
+  - 子传父：通过在父组件引入的子组件中传递一个函数并传参,子组件去触发这个函数更改参数完成数据更新
+  - redux或者react-redux
+  - 过上下文的形式做组件传值
 - 知道react hook吗？
 - 高阶组件hoc用过吗？哪些？ 
 - vue懒加载
