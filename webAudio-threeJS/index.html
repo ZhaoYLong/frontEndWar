@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <div id="content">
+      <label for="thefile" class="file">选择攒劲的文件
+        <input type="file" id="thefile" accept="audio/*">
+      </label>
+
+      <audio id="audio" controls></audio>
+      <div id="out"></div>
+    </div>
+  </div>
+</body>
+<!-- 引入必要的库 -->
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.3/dat.gui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.3.0/simplex-noise.min.js"></script>
+<script src="index.js"></script>
+</html>

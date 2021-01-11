@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html{
+    overflow-x: hidden;
+    overflow-y: visible;
+    }
+    body{
+    width: 1920px;
+    height: 1080px;
+    background: url(../images/bg.png) 0% 0% / 100%;
+    transform-origin: left top 0px;
+    overflow-y: visible;
+    -ms-transform-origin: left top 0px; /* IE 9 */
+    -moz-transform-origin: left top 0px; /* Firefox */
+    -webkit-transform-origin: left top 0px; /* Safari 和 Chrome */
+    -o-transform-origin: left top 0px;
+    }
+    body::-webkit-scrollbar {
+    display: none;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    这是测试窗口缩放的
+  </div>
+  
+</body>
+<script>
+  //等比例缩放屏幕
+window.onload=function(){
+changeDivHeight();
+}
+//当浏览器窗口大小改变时，设置显示内容的高度
+window.onresize=function(){
+changeDivHeight();
+}
+function changeDivHeight(){
+// debugger;
+var h = document.documentElement.clientWidth;//获取页面可见高度
+var Bbodyhgt=h/1920;
+// $(document.body).css("-webkit-transform","scale(" + Bbodyhgt + ")");
+$(document.body).css({
+"-webkit-transform": "scale(" + Bbodyhgt + ")",
+"-ms-transform": "scale(" + Bbodyhgt + ")",
+"-moz-transform": "scale(" + Bbodyhgt + ")",
+"-o-transform": "scale(" + Bbodyhgt + ")",
+});
+}
+</script>
+</html>
