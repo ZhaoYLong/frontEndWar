@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My first three.js app</title>
+  <style>
+    body {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <script src="js/three.js"></script>
+  <script>
+    // Our javascript will go here
+    // 为了真正能够让你的场景借助three.js来进行显示，需要以下几个对象：场景、相机、渲染器。这样我们就能透过摄像机渲染出场景
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // 添加立方体
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial( { color: 0xFFD43B } );
+    const cube = new THREE.Mesh( geometry, material );
+    scene.add( cube );
+
+    camera.position.z = 5;
+
+    // 渲染场景
+    // 上述代码，放在浏览器中，什么也看不到，因为我们还没有开始真正的渲染
+    function animate() {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
+<!-- 
+  - three.js里有几种不同的相机，
+    - PerspectiveCamera： 透视摄像机
+      - 第一个参数： 视野角度FOV。视野角度就是无论在什么时候，你所能在显示器上看到的场景的范围，它的值就是角度范围
+      - 第二个参数：长宽比。
+      - 第三个参数：近截面near
+      - 第四个参数：远截面far
+  
+  - 渲染器：这里是施展魔法的地方，除了我们用到的WebGLRenderer渲染器之外，Three.js还提供了其他几种渲染器。当用户浏览器不支持WebGL时，可以使用其他渲染器来降级。
+
+  - 还要设置渲染器的尺寸
+
+  - 最后，将渲染器的dom元素添加到HTML文档中。
+
+  - BoxGeometry(立方体)对象。这个对象包含了一个立方体中所有的顶点（vertices）和面（faces)
+
+  - 材质，three.js自带几种材质，这里使用MeshBasicMaterial.
+
+  - 我们需要一个Mesh网格，网格包含一个几何体及其作用于此几何体上的材质
+
+  - 默认情况下，当我们调用scene.add()的时候，物体将会被添加到(0,0,0)坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。
+
+  - requestAnimationFrame有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。
+
+  - 让立方体动起来
+    - 在renderer.render调用的上面，添加cube.rotation.x += 0.01; cube.rotation.y +=0.01;
+    - 这段代码每帧都会执行，正常情况下，每秒60次。
+    当程序运行时，如果想要移动或者改变任何场景中的东西，都必须经过这个动画循环。
+    - 当然可以在这个动画循环中调用别的函数，这样你就不会写出上百行的animate函数了。
+
+    
+ -->

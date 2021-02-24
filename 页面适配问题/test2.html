@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      overflow-y: hidden;
+      overflow-x: hidden;
+    }
+
+    .page {
+      color: snow;
+      width: 1244.4px;
+      height: 700px;
+      background: rgb(178, 180, 70);
+    }
+
+    .center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) !important;
+      background: teal;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="center">
+      <p>TikTok</p>
+      <span>加钱居士</span>
+    </div>
+  </div>
+</body>
+<script>
+  (function () {
+    // console.log('浏览器高度: ', this.outerHeight, '*****', '浏览器宽度：', this.outerWidth);
+    console.log('浏览器可用高度: ', this.innerHeight, '*****', '浏览器可用宽度：', this.innerWidth);
+    var bodyWidth = document.body.offsetWidth;
+    var bodyHeight = document.body.offsetHeight;
+    var min = Math.min(bodyWidth, bodyHeight);
+    console.log(bodyWidth, bodyHeight);
+    var getRem = function () {
+      // 改变字的size
+      document.documentElement.style.fontSize = (min * (bodyWidth > bodyHeight ? 1920 / 1080 : 1) / 1920)* 10 + 'em';
+      console.log('fontSize： ', document.documentElement.style.fontSize);
+    }
+    setPosition();
+    // getRem();
+    // window.onresize = function () {
+    //   getRem();
+    //   // setPosition();
+    // };
+
+    function setPosition() {
+      //这里调整页面的大小
+      var contentNodeArrLike = document.getElementsByClassName('page');
+      for (var i = 0; i < contentNodeArrLike.length; i++) {
+        contentNodeArrLike[i].style.width = min * (bodyWidth > bodyHeight ? 1920 / 1080 : 1) + 'px';
+        contentNodeArrLike[i].style.height = min * (bodyWidth > bodyHeight ? 1 : 1080 / 1920) + 'px';
+        let innerHeight = this.innerHeight; // 可用高度
+        if (innerHeight < bodyHeight) {
+          contentNodeArrLike[i].style.height = innerHeight + 'px';
+          contentNodeArrLike[i].style.width = innerHeight * 1.78 + 'px';
+        }
+        console.log('适应后的宽：', contentNodeArrLike[i].style.width,  '****适应后的高： ', contentNodeArrLike[i].style.height);
+        contentNodeArrLike[i].classList.add('center');
+      }
+      var centerLike = document.getElementsByClassName('center');
+      // console.log(centerLike);
+
+    }
+  })()
+</script>
+
+</html>
