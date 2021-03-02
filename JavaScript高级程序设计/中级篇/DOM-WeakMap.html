@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .logPane {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="loginPane">
+    <button class="login" id="login">登录</button>
+    <button class="login2" id="login2">登录2</button>
+  </div>
+  <script>
+    const wm = new WeakMap();
+    const loginButton = document.querySelector('#login');
+
+    // 给这个节点关联一些元数据
+    wm.set(loginButton, {disabled: true});
+
+    const m = new Map();
+    const login2 = document.querySelector('#login2');
+    m.set(login2, {disabled: true})
+  </script>
+</body>
+</html>
