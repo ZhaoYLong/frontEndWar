@@ -219,4 +219,211 @@
 ### 异步函数（async/await）
 
 - 是ES6期约模式在ECMAScript函数中的应用。async/await是ES8规范新增的.
-- 
+- 让以同步方式写的代码能够异步执行。
+- ES8的async/await旨在解决利用异步结构组织代码的问题。
+
+- async关键字用于声明异步函数。
+  - 这个关键字可以用在函数声明、函数表达式、箭头函数和方法上
+
+  ```js
+    async function foo() {}
+    let bar = async function() {}
+    let baz = async () => {}
+    class Qux {
+        async qux() {}
+    }
+  ```
+
+  - 使用async关键字可以让函数具有异步特征，但总体上其代码仍然是同步求值的。
+  - 异步函数如果使用了return 关键字返回值（如果没有return则返回undefined），这个值会被Promise.resolve()包装成为一个Promise对象。异步函数始终返回Promise对象。
+
+  ```js
+    async function foo() {
+        console.log(1)
+        return 3
+    }
+    foo().then(console.log)
+    console.log(2)
+
+    // 1
+    // 2
+    // 3
+  ```
+
+  - 异步函数的返回值期待（但实际上并不要求）一个实现thenable接口的对象，常规值也可以。
+  - 如果返回的是实现thenable接口的对象，则这个对象可以由提供给then()的处理程序解包。
+  - 如果不是，则返回值就被当作已经解决的Promise实例。
+
+  ```js
+    // 返回一个原始值
+    async function foo() {
+        return 'foo'
+    }
+
+    foo().then(console.log) // foo
+
+    // 返回一个没有实现thenable接口的对象
+    async function bar() {
+        return ['bar'];
+    }
+    bar().then(console.log) // ['bar']
+
+    // 返回一个实现了thenable接口的Promise对象
+    async function baz () {
+        const thenable = {
+            then(callback) {callback('baz')}
+        }
+        return thenable
+    }
+    baz().then(console.log) // baz
+
+    // 返回一个Promise
+    async function qux () {
+        return Promise.resolve('qux')
+    }
+    qux.then(console.log) // qux
+  ```
+
+  - 与在Promise处理程序中一样，在异步函数中抛出错误会返回拒绝的Promise对象：
+
+  ```js
+    async function foo() {
+        console.log(1)
+        throw 3
+    }
+    foo().catch(console.log)
+    console.log(2)
+
+    // 1
+    // 2
+    // 3
+  ```
+
+  - 拒绝期约的错误不会被异步函数捕获
+
+  ```js
+    async function foo() {
+        console.log(1);
+        Promise.reject(3);
+    }
+    foo.catch(console.log)
+    console.log(2)
+
+    // 1
+    // 2
+    // Uncaught (in promise): 3
+  ```
+
+- await
+  - 因为异步函数主要针对不会马上完成的任务，所有需要一种暂停和恢复执行的能力。
+  - 使用await关键字可以暂停异步函数代码的执行，等待Promise解决。
+
+  ```js
+    let p = new Promise((resolve, reject) => setTimeout(resolve, 1000, 3));
+    p.then((x) => console.log(x)) // 3
+
+    // 使用async/await
+    async function foo() {
+        let p = new Promise((resolve, reject) => setTimeout(resolve, 1000, 3));
+        console.log(await p);
+    }
+    foo() // 3
+  ```
+  
+  - await关键字会暂停执行异步函数后面的代码，让出JS运行时的执行线程。
+  - 这个行为与生成器函数中的yield关键字是一样的。await关键字同样尝试解包对象的值，然后将这个值传给表达式，在异步恢复异步函数的执行。
+  - await关键字的用法与JS的一元操作一样。它可以单独使用，也可以在表达式中使用。
+
+  ```js
+    // 异步打印foo
+    async function foo() {
+      console.log(await Promise.resolve('foo'))
+    }
+
+    foo() // foo
+
+    // 异步打印bar
+    async function bar() {
+      return await Promise.resolve('bar')
+    }
+    bar().then(console.log) // bar
+
+    // 1000毫秒后异步打印baz
+    async function baz() {
+      await new Promise((resolve, reject) => setTimeout(resolve, 1000));
+      console.log('baz') // baz
+    }
+  ```
+
+  - await关键字期待（但实际上并不要求）一个实现thenable接口的对象，但常规的值也可以。如果是实现thenable接口的对象，则这个对象可以由await来“解包”。如果不是，则这个值就被当作已经解决的期约。
+
+- await的限制
+  - await关键字必须在异步函数中使用。不能再顶级上下文如`<script>`标签或模块中使用。
+  - 不过定义并立即调用异步函数是没有问题的。
+
+  ```js
+    async function foo() {
+      console.log(await Promise.resolve(3))
+    }
+    foo(); // 3
+
+    (async function() {
+      console.log(await Promise.resolve(3))
+    })()
+    // 3
+  ```
+
+  - 异步函数的特质不会扩展到嵌套函数，因此await关键字也只能直接出现再异步函数的定义中。在同步函数中使用await会抛出SyntaxError.
+    - await不能出现在箭头函数中
+    - 不能出现在同步函数声明中
+    - 不能出现在同步函数表达式中
+    - IIFE使用同步函数或箭头函数
+
+- 停止和恢复执行
+  - async/await中真正起作用的是await。
+  - async关键字其实只是一个异步函数的标识。
+
+  - JS运行时在碰到await时，会记录在哪里暂停。等到await右边的值可用了，JS运行时会向消息队列中推送一个任务，这个任务会恢复异步函数的执行。
+  - 因此，即使await后面跟着一个立即可用的值，函数的其余部分也会被异步求值。
+
+  ```js
+    async function foo() {
+      console.log(2)
+      await null;
+      console.log(4);
+    }
+    console.log(1);
+    foo();
+    console.log(3);
+
+    // 1
+    // 2
+    // 3
+    // 4
+  ```
+
+  - 如果await后面是一个Promise对象，则问题会复杂一些。
+    - 此时为了执行异步函数，实际上会有两个任务被添加到消息队列并被异步求值。
+    -  TC39对await后面是期约的情况如何处理做过一次修改。修改后，本例中的Promise.resolve(8)只会生成一个异步任务。
+
+- 异步函数策略
+  1. 实现sleep()
+  
+  ```js
+    async function sleep(delay) {
+      return new Promise((resolve) => setTimeout(resolve, delay))
+    }
+
+    async function () {
+      const t0 = Data.now()
+      await sleep(1500) // 暂停1500ms
+      console.log(Date.now() - t0)
+    }
+    foo()
+    // 1502
+  ```
+
+  2. 利用平行执行
+  3. 串行执行Promise
+  4. 栈追踪与内存管理
+
