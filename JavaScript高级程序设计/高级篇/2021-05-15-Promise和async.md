@@ -424,6 +424,85 @@
   ```
 
   2. 利用平行执行
-  3. 串行执行Promise
-  4. 栈追踪与内存管理
+  - 如果使用await时不留心，则可能错过平行加速的机会。
 
+  3. 串行执行Promise
+  - 在11.2节，我们讨论过如何串行执行期约并把值传给后续的期约。使用async/await，期约连锁会变得很简单。
+
+  ```js
+    function addTwo(x) {return x + 2}
+    function addThree(x) {return x + 3}
+    function addFive(x) {return x + 5}
+
+    async fucntion addTen(x) {
+      for (const fn of [addTwo, addThree, addFive]) {
+        x = await fn(x)
+      }
+      return x;
+    }
+
+    addTen(9).then(console.log) // 19
+  ```
+
+  - 这里，await直接传递了每个函数的返回值，结果通过迭代产生。
+  - 当然，这个例子并没有使用期约，如果要使用期约，则可以把所有函数都改成异步函数。这样它们就都返回期约了。
+
+  ```js
+    async function addTwo(x) {return x + 2}
+    async function addThree(x) {return x + 3}
+    async function addFive(x) {return x + 5}
+
+    async fucntion addTen(x) {
+      for (const fn of [addTwo, addThree, addFive]) {
+        x = await fn(x)
+      }
+      return x;
+    }
+
+    addTen(9).then(console.log) // 19
+  ```
+
+  1. 栈追踪与内存管理
+    - 期约与异步函数的功能有相当程度的重叠，但它们在内存中表示则差别很大。
+
+  ```js
+    function fooPromiseExecutor(resolve, reject) {
+      setTimeout(reject, 100, 'bar');
+    }
+
+    function foo() {
+      new Promise(fooPromiseExecutor);
+    }
+
+    foo()
+
+    // Uncaught (in promise) bar
+    // setTimeout
+    // setTimeout (async)
+    // fooPromiseExecutor
+    // foo
+
+    // 换成异步函数
+    function fooPromiseExecutor(resolve, reject) {
+      setTimeout(reject, 100, 'bar');
+    }
+
+    async function foo() {
+      await new Promise(fooPromiseExecutor);
+    }
+
+    // Uncaught (in promise) bar
+    // foo
+    // async fucntion (async)
+    // foo
+  ```
+
+### 小结
+- 期约的主要功能是为异步代码提供了清晰的抽象。
+- 可以用期约表示异步执行的代码块，也可以用期约表示异步计算的值。
+- 在需要串行异步代码时，期约的价值最为突出。作为可塑性极强的一种结构，期约可以被序列化、连锁使用、复合、扩展和重组。
+- 异步函数是将期约应用于JavaScript函数的结果。
+
+- 异步函数可以暂停执行，而不阻塞主线程。
+- 无论是编写基于期约的代码，还是组织串行或平行执行的异步代码，使用异步函数都非常得心应手。
+- 异步函数可以说是现代JavaScript工具箱中最重要的工具之一
