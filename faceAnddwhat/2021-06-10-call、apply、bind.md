@@ -104,3 +104,8 @@ Function.prototype.myBind = function (context, ...args) {
     return fBound;
 }
 ```
+
+
+### 一种更高级的方式实现三个方法
+
+- [语法上更高级的实现方式](https://github.com/ZhaoYLong/frontEndWar/blob/master/faceAnddwhat/2021-06-10-JS%E5%AE%9E%E7%8E%B0Call%2CApply%2CBind.md)
