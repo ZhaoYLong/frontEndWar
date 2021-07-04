@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blank Page for Rich Text Editing</title>
+    <style>
+        .editable {
+            width: 500px;
+            height: 300px;
+            margin-top: 50px;
+            border: 1px solid rgb(170, 61, 61);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 第一种方式 -->
+    <iframe name="richedit" style="height: 300px; width:500px;"></iframe>
+    <!-- 第二种方式 -->
+    <div class="editable" id="richedit" contenteditable></div>
+</body>
+<script>
+    let div = document.getElementById("richedit"); 
+    richedit.contentEditable = "true";
+    
+    // -----------------------------------------------
+    window.addEventListener("load", () => {
+        frames["richedit"].document.designMode = "on"
+    })
+
+    // 在内嵌窗格中切换粗体文本样式
+    frames["richedit"].document.execCommand("bold", false, null); 
+
+    // 在内嵌窗格中切换斜体文本样式
+    frames["richedit"].document.execCommand("italic", false, null);
+
+    // 在内嵌窗格中创建指向www.wrox.com的链接
+    frames["richedit"].document.execCommand("createlink", false,      "http://www.wrox.com"); 
+
+    // 在内嵌窗格中为内容添加<h1>标签
+    frames["richedit"].document.execCommand("formatblock", false, "<h1>");
+
+    let selection = frames["richedit"].getSelection();  
+    // 取得选中的文本
+    let selectedText = selection.toString();  
+    // 取得表示选区的范围
+    let range = selection.getRangeAt(0); 
+    // 高亮选中的文本
+    let span = frames["richedit"].document.createElement("span"); 
+    span.style.backgroundColor = "yellow";  
+    range.surroundContents(span);
+</script>
+
+</html>
