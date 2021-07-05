@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>shadow canvas</title>
+</head>
+
+<body>
+  <div style="margin: 20px">
+    <canvas id="drawing" width="500" height="200"></canvas>
+  </div>
+  <div style="margin: 20px">
+    <canvas id="drawing2" width="500" height="200"></canvas>
+  </div>
+  <img src="./test.png" alt="" style="width: 50px; height: 50px">
+  <div style="margin: 20px">
+    <canvas id="drawing3" width="500" height="200"></canvas>
+  </div>
+</body>
+<script>
+  // 计算相应的坐标
+  function createRectLinearGradient(context, x, y, width, height) {
+    return context.createLinearGradient(x, y, x + width, y + height);
+  }
+
+  let drawing = document.getElementById("drawing");
+  if (drawing.getContext) {
+    let context = drawing.getContext("2d");
+    // 设置阴影
+    context.shadowOffsetX = 5;
+    context.shadowOffsetY = 5;
+    context.shadowBlur = 4;
+    context.shadowColor = "rgba(0, 0, 0, 0.5)"
+
+    context.fillStyle = "#ff0000";
+    context.fillRect(10, 10, 50, 50);
+
+    // context.globalCompositeOperation = "destination-over"; 
+
+    context.fillStyle = "rgba(0,0,255,1)";
+    context.fillRect(30, 30, 50, 50);
+
+    let gradient = context.createLinearGradient(30, 30, 70, 70);
+    gradient.addColorStop(0, "white");
+    gradient.addColorStop(0.8, "yellow");
+    gradient.addColorStop(1, "black");
+    // 绘制渐变矩形
+    context.fillStyle = gradient;
+    context.fillRect(50, 50, 50, 50);
+
+    let grad2 = createRectLinearGradient(context, 100, 100, 120, 120);
+    grad2.addColorStop(0, "yellow");
+    grad2.addColorStop(1, "black");
+    // 绘制渐变矩形
+    context.fillStyle = grad2;
+    context.fillRect(70, 70, 50, 50);
+  }
+
+  let drawing2 = document.getElementById("drawing2");
+  if (drawing2.getContext) {
+    let context = drawing2.getContext("2d");
+    let gradient = context.createRadialGradient(55, 55, 10, 55, 55, 30);
+    gradient.addColorStop(0, "white");
+    gradient.addColorStop(1, "black");
+
+    // 绘制红色矩形
+    context.fillStyle = "#ff0000";
+    context.fillRect(10, 10, 50, 50);
+    // 绘制渐变矩形
+    context.fillStyle = gradient;
+    context.fillRect(30, 30, 50, 50);
+  }
+
+  let drawing3 = document.getElementById("drawing3");
+  if (drawing3.getContext) {
+    let context3 = drawing3.getContext("2d"),
+      image = document.images[0],
+      i, len, average,
+      red, green, blue, alpha;
+
+      console.log('image:', image);
+
+    // 绘制图像
+    context3.drawImage(image, 0, 0);
+    // console.log(context);
+
+    // 取得图像数据
+    imageData = context3.getImageData(0, 0, image.width, image.height);
+    data = imageData.data;
+    console.log(data);
+    for (i = 0, len = data.length; i < len; i += 4) {
+      red = data[i];
+      green = data[i + 1];
+      blue = data[i + 2];
+      alpha = data[i + 3];
+
+      // 取得RGB平均值
+      average = Math.floor((red + green + blue) / 3);
+
+      // 设置颜色，不管透明度
+      data[i] = average;
+      data[i + 1] = average;
+      data[i + 2] = average;
+    }
+    // 将修改后的数据写回ImageData并应用到画布上显示出来
+    imageData.data = data;           
+    context3.putImageData(imageData, 0, 0);
+  }
+</script>
+
+</html>
