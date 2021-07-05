@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div></div>
+</body>
+<script>
+  // 传统JavaScript操作对于并发内存访问导致的资源争用没有提供保护
+  const workerScript = `
+  self.onmessage = ({data}) => {
+    const view = new Uint32Array(data);
+
+    // 执行 1 000 000次加操作
+    for (let i =0; i < 1E6; ++i) {
+      // 线程不安全加操作会导致资源争用
+      view[0] += 1;
+    }
+    self.postMessage(null);
+  };
+`;
+
+  const workerScriptBlobUrl = URL.createObjectURL(new Blob([workerScript]));
+  console.log('workerScriptBlobUrl: ', workerScriptBlobUrl)
+
+  // 创建容量为4的工作线程池
+  const workers = [];
+  for (let i = 0; i < 4; ++i) {
+    workers.push(new Worker(workerScriptBlobUrl));
+  }
+  console.log('workers: ', workers);
+
+  // 在最后一个工作线程完成后打印出最终值
+  let responseCount = 0;
+  for (const worker of workers) {
+    worker.onmessage = () => {
+      if (++responseCount == workers.length) {
+        console.log(`Final buffer value: ${view[0]}`);
+      }
+    };
+  }
+
+  // 初始化SharedArrayBuffer 
+  const sharedArrayBuffer = new SharedArrayBuffer(4);
+  console.log('shareArrayBuffer: ', sharedArrayBuffer);
+  const view = new Uint32Array(sharedArrayBuffer);
+  console.log('view: ', view);
+  view[0] = 1;
+  // 把SharedArrayBuffer发送到每个工作线程
+  for (const worker of workers) {
+    worker.postMessage(sharedArrayBuffer);
+  }
+
+  // （期待结果为4000001。实际输出可能类似这样：
+  //输出：Final buffer value: 3770930
+</script>
+
+</html>
