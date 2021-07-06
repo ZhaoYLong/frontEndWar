@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #droptarget {
+      border: 1px solid red;
+    }
+
+    #div1 {
+      border: 1px solid rgb(59, 224, 141);
+    }
+
+    #output {
+      border: 1px solid blue;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="droptarget" style="width: 400px; height: 200px">拖拽文件</div>
+  <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)" style="width: 400px; height: 200px"></div>
+  <div id="output" style="margin: 20px; width: 400px; height: 200px;"></div>
+  <div class="mediaplayer">
+    <div class="video">
+      <video id="player"
+        src="https://videocdn.jellow.site/lixO_3OjPB4DLTnZD60QFCgLLs5J.mp4?sign=089a2b5a95bbfe4c2519efa1dc5c4ed5&t=60e40275"
+        poster="https://cdn.jellow.site/Fv_8IWTFMgpsbTMbAK3fQFSFIa1U?imageMogr2/auto-orient/heic-exif/1/format/jpeg/thumbnail/400x2000%3E/quality/70/interlace/1"
+        width="300" height="200">
+        Video player not available.
+      </video>
+    </div>
+    <div class="controls">
+      <input type="button" value="Play" id="video-btn">
+      <span id="curtime">0</span>/<span id="duration">0</span>
+    </div>
+  </div>
+  <div id="drag1" draggable="true" ondragstart="drag(event)"
+    style="width: 400px; height: 200px; background: rgb(53, 182, 175);">可拖动</div>
+</body>
+<script>
+  let droptarget = document.getElementById("droptarget");
+  function handleEvent(event) {
+    let info = "",
+      output = document.getElementById("output"),
+      files, i, len;
+    event.preventDefault();
+    if (event.type == "drop") {
+      files = event.dataTransfer.files;
+      i = 0;
+      len = files.length;
+      while (i < len) {
+        info += `${files[i].name} (${files[i].type}, ${files[i].size} bytes)<br>`;
+        i++;
+      }
+      output.innerHTML = info;
+    }
+  }
+  droptarget.addEventListener("dragenter", handleEvent);
+  droptarget.addEventListener("dragover", handleEvent);
+  droptarget.addEventListener("drop", handleEvent);
+
+  // 取得元素的引用
+  let player = document.getElementById("player"),
+    btn = document.getElementById("video-btn"),
+    curtime = document.getElementById("curtime"),
+    duration = document.getElementById("duration");
+  // 更新时长
+  duration.innerHTML = player.duration;
+  // 为按钮添加事件处理程序
+  btn.addEventListener("click", (event) => {
+    if (player.paused) {
+      player.play();
+      btn.value = "Pause";
+    } else {
+      player.pause();
+      btn.value = "Play";
+    }
+  });
+  // 周期性更新当前时间
+  setInterval(() => {
+    curtime.innerHTML = player.currentTime;
+  }, 250);
+
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+  }
+
+  function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+  }
+</script>
+
+</html>
